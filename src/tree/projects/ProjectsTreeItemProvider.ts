@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { getActiveProjectId, getAppwriteProjects } from "../../settings";
 import { ProjectTreeItem } from "./ProjectTreeItem";
+import { projectsClient } from "../../client";
 
 export class ProjectsTreeItemProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | void> = new vscode.EventEmitter<
@@ -26,11 +27,17 @@ export class ProjectsTreeItemProvider implements vscode.TreeDataProvider<vscode.
     }
 
     async getChildren(_element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
-        const configs = await getAppwriteProjects();
-        if (configs === undefined || configs.length === 0) {
+        const projects = await projectsClient.list();
+        if(projects.total == 0) {
             return [];
         }
         const activeProjectId = await getActiveProjectId();
-        return configs.map((config) => new ProjectTreeItem(config, config.projectId === activeProjectId));
+
+        return projects.projects.map((proj) => new ProjectTreeItem(proj, proj.$id === activeProjectId));
+        // const configs = await getAppwriteProjects();
+        // if (configs === undefined || configs.length === 0) {
+        //     return [];
+        // }
+        // return configs.map((config) => new ProjectTreeItem(config, config.projectId === activeProjectId));
     }
 }

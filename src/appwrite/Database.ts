@@ -1,4 +1,4 @@
-import { Client, Collection, CreatedCollection, CreatedRule, DatabaseClient, Rule } from "../appwrite";
+import { Client, Collection, CreatedCollection, CreatedRule, DatabaseClient, Rule } from "@appwrite.io/console";
 import { AppwriteSDK } from '../constants';
 import AppwriteCall from "../utils/AppwriteCall";
 
