@@ -1,11 +1,11 @@
 import { window } from "vscode";
-import { usersClient } from "../../client";
+import { users } from "../../client";
 import { UserTreeItem } from '../../tree/users/UserTreeItem';
 import { DialogResponses } from "../../ui/DialogResponses";
 import { refreshTree } from "../../utils/refreshTree";
 
 export async function deleteUser(userTreeItem: UserTreeItem): Promise<void> {
-    if (!usersClient) {
+    if (!users) {
         return;
     }
     const user = userTreeItem.user;
@@ -20,7 +20,7 @@ export async function deleteUser(userTreeItem: UserTreeItem): Promise<void> {
     );
 
     if (shouldDeleteUser === DialogResponses.yes) {
-            await usersClient.delete(userId);
+            await users.delete(userId);
         refreshTree("users");
     }
 }

@@ -1,35 +1,7 @@
 import { MarkdownString } from 'vscode';
-import { AppwriteHealth, Client, HealthClient } from "../appwrite";
-import { AppwriteSDK } from '../constants';
-export class Health {
-    private readonly health: HealthClient;
 
-    constructor(client: Client) {
-        this.health = new AppwriteSDK.Health(client);
-    }
 
-    /**
-     * @returns The health of all Appwrite services.
-     */
-    public async checkup(): Promise<Partial<AppwriteHealth>> {
-        return {
-            HTTP: await this.health.get(),
-            DB: await this.health.getDB(),
-            Cache: await this.health.getCache(),
-            Time: await this.health.getTime(),
-            QueueWebhooks: await this.health.getQueueWebhooks(),
-            QueueTasks: await this.health.getQueueTasks(),
-            QueueLogs: await this.health.getQueueLogs(),
-            QueueUsage: await this.health.getQueueUsage(),
-            QueueCertificates: await this.health.getQueueCertificates(),
-            QueueFunctions: await this.health.getQueueFunctions(),
-            StorageLocal: await this.health.getStorageLocal(),
-            AntiVirus: await this.health.getAntiVirus(),
-        };
-    }
-}
-
-export const healthTooltips: Record<keyof AppwriteHealth, string | MarkdownString | undefined> = {
+export const healthTooltips: Record<string, string | MarkdownString | undefined> = {
     HTTP: "Check the Appwrite HTTP server is up and responsive.",
     DB: "Check the Appwrite in-memory cache server is up and connection is successful.",
     Cache: "Check the Appwrite in-memory cache server is up and connection is successful.",

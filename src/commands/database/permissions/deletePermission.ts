@@ -1,8 +1,8 @@
-import { databaseClient } from "../../../client";
+import { databases } from "../../../client";
 import { PermissionTreeItem } from "../../../tree/database/settings/PermissionTreeItem";
 
 export async function deletePermission(treeItem: PermissionTreeItem): Promise<void> {
-    if (!databaseClient) {
+    if (!databases) {
         return;
     }
     const collection = treeItem.parent.parent.collection;
@@ -17,5 +17,5 @@ export async function deletePermission(treeItem: PermissionTreeItem): Promise<vo
         write = write.filter((item) => item !== treeItem.permission);
     }
 
-    await databaseClient.updatePermissions(collection, read, write);
+    await databases.updatePermissions(collection, read, write);
 }

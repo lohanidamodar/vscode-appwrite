@@ -1,12 +1,12 @@
 import { CreatedRule } from "../../appwrite";
-import { databaseClient } from "../../client";
+import { databases } from "../../client";
 import { RulesTreeItem } from "../../tree/database/settings/RulesTreeItem";
 import { createRuleWizard } from "../../ui/createRuleWizard";
 import { refreshTree } from '../../utils/refreshTree';
 
 export async function createRule(rulesTreeItem: RulesTreeItem): Promise<void> {
 
-    if (!databaseClient) {
+    if (!databases) {
         return;
     }
 
@@ -19,7 +19,7 @@ export async function createRule(rulesTreeItem: RulesTreeItem): Promise<void> {
             type: ruleContext.type,
         };
 
-        databaseClient.createRule(collection, newRule);
+        databases.createRule(collection, newRule);
 
         await rulesTreeItem.refresh();
         refreshTree("database");

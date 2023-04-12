@@ -1,31 +1,26 @@
-import { Client } from "./appwrite";
-import { Database } from "./appwrite/Database";
-import { Functions } from './appwrite/Functions';
-import { Health } from "./appwrite/Health";
-import { Storage } from "./appwrite/Storage";
-import { Users } from "./appwrite/Users";
-import { AppwriteSDK } from "./constants";
+import { Client, Databases, Functions, Health, Storage, Users } from "node-appwrite";
+
 import { AppwriteProjectConfiguration } from "./settings";
 
 export let client: Client;
 export let clientConfig: { endpoint: string; projectId: string; secret: string };
-export let usersClient: Users | undefined;
-export let healthClient: Health | undefined;
-export let databaseClient: Database | undefined;
-export let storageClient: Storage | undefined;
-export let functionsClient: Functions | undefined;
+export let users: Users | undefined;
+export let health: Health | undefined;
+export let databases: Databases | undefined;
+export let storage: Storage | undefined;
+export let functions: Functions | undefined;
 
 
 function initAppwriteClient({ endpoint, projectId, secret, selfSigned }: AppwriteProjectConfiguration) {
-    client = new AppwriteSDK.Client();
+    client = new Client();
     clientConfig = { endpoint, projectId, secret };
     client.setEndpoint(endpoint).setProject(projectId).setKey(secret).setSelfSigned(selfSigned);
 
-    usersClient = new Users(client);
-    healthClient = new Health(client);
-    databaseClient = new Database(client);
-    storageClient = new Storage(client);
-    functionsClient = new Functions(client);
+    users = new Users(client);
+    health = new Health(client);
+    databases = new Databases(client);
+    storage = new Storage(client);
+    functions = new Functions(client);
 
     return client;
 }
@@ -36,9 +31,9 @@ export function createAppwriteClient(config?: AppwriteProjectConfiguration): voi
         return;
     }
 
-    usersClient = undefined;
-    healthClient = undefined;
-    databaseClient = undefined;
-    storageClient = undefined;
-    functionsClient = undefined;
+    users = undefined;
+    health = undefined;
+    databases = undefined;
+    storage = undefined;
+    functions = undefined;
 }

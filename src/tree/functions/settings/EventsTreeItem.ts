@@ -1,6 +1,6 @@
 import { QuickPickItem, QuickPickOptions } from "vscode";
 import { Function } from "../../../appwrite";
-import { functionsClient } from "../../../client";
+import { functions } from "../../../client";
 import { appwriteSystemEvents } from "../../../constants";
 import { ext } from "../../../extensionVariables";
 import { EnumEditableTreeItemBase } from "../../common/editable/EnumEditableTreeItem";
@@ -25,7 +25,7 @@ export class EventsTreeItem extends EnumEditableTreeItemBase {
     }
 
     public async setValue(value: string[]): Promise<void> {
-        await functionsClient?.update(this.func.$id, this.func.name, [], this.func.vars, value, this.func.schedule, this.func.timeout);
+        await functions?.update(this.func.$id, this.func.name, [], this.func.vars, value, this.func.schedule, this.func.timeout);
         ext.tree?.functions?.refresh();
     }
 }

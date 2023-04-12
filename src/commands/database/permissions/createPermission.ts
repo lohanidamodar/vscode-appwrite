@@ -1,5 +1,5 @@
 import { window } from "vscode";
-import { databaseClient } from "../../../client";
+import { databases } from "../../../client";
 import { PermissionsTreeItem } from "../../../tree/database/settings/PermissionsTreeItem";
 
 export type CreatePermissionWizardContext = {
@@ -23,7 +23,7 @@ export async function createPermissionWizard(kind?: "read" | "write"): Promise<C
 }
 
 export async function createPermission(treeItem: PermissionsTreeItem): Promise<void> {
-    if (!databaseClient) {
+    if (!databases) {
         return;
     }
 
@@ -43,5 +43,5 @@ export async function createPermission(treeItem: PermissionsTreeItem): Promise<v
         write.push(context.permission);
     }
 
-    await databaseClient.updatePermissions(collection, read, write);
+    await databases.updatePermissions(collection, read, write);
 }

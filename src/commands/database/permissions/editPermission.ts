@@ -1,9 +1,9 @@
 import { window } from "vscode";
-import { databaseClient } from "../../../client";
+import { databases } from "../../../client";
 import { PermissionTreeItem } from "../../../tree/database/settings/PermissionTreeItem";
 
 export async function editPermission(treeItem: PermissionTreeItem): Promise<void> {
-    if (!databaseClient) {
+    if (!databases) {
         return;
     }
     const editedPermission = await window.showInputBox({
@@ -28,5 +28,5 @@ export async function editPermission(treeItem: PermissionTreeItem): Promise<void
         write.push(editedPermission);
     }
 
-    await databaseClient.updatePermissions(collection, read, write);
+    await databases.updatePermissions(collection, read, write);
 }

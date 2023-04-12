@@ -1,6 +1,6 @@
 import { InputBoxOptions, MarkdownString } from "vscode";
 import { Function } from "../../../appwrite";
-import { functionsClient } from "../../../client";
+import { functions } from "../../../client";
 import { ext } from "../../../extensionVariables";
 import { StringEditableTreeItemBase } from '../../common/editable/StringEditableTreeItem';
 import { FunctionSettingsTreeItem } from "./FunctionSettingsTreeItem";
@@ -31,7 +31,7 @@ export class NameTreeItem extends StringEditableTreeItemBase {
         if (value.length === 0) {
             return;
         }
-        await functionsClient?.update(this.func.$id, value, [], this.func.vars, this.func.events, this.func.schedule, this.func.timeout);
+        await functions?.update(this.func.$id, value, [], this.func.vars, this.func.events, this.func.schedule, this.func.timeout);
         ext.tree?.functions?.refresh();
     }
 

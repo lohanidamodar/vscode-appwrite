@@ -43,6 +43,7 @@ import { openFunctionSettingsInBrowser } from './functions/openFunctionSettingsI
 import { openFunctionTagsInBrowser } from './functions/openFunctionTagsInBrowser';
 
 import { viewMore } from './common/viewMore';
+import { createDatabase } from "./database/createDatabase";
 
 class CommandRegistrar {
     constructor(private readonly context: ExtensionContext) {}
@@ -103,6 +104,7 @@ export function registerCommands(context: ExtensionContext): void {
     registerCommand("refreshCollection", refreshCollection);
     registerCommand("refreshCollectionsList", refreshCollectionsList);
     registerCommand("createCollection", createCollection, "database");
+    registerCommand("createDatabase", createDatabase, "database");
     registerCommand("createPermission", createPermission, "database");
     registerCommand("deletePermission", deletePermission, "database");
     registerCommand("editPermission", editPermission, "database");

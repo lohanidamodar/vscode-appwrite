@@ -1,13 +1,12 @@
 import * as vscode from "vscode";
-import { client } from "../../client";
+import { client, users } from "../../client";
 import AppwriteCall from "../../utils/AppwriteCall";
-import { User, UsersList } from "../../appwrite";
 import { ThemeIcon } from "vscode";
 import { UserPrefsTreeItem } from "./properties/UserPrefsTreeItem";
 import { ChildTreeItem } from "../ChildTreeItem";
 import { UserTreeItem } from "./UserTreeItem";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const sdk = require("node-appwrite");
+import { Models } from "node-appwrite";
+
 
 export class UserTreeItemProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<UserTreeItem | undefined | void> = new vscode.EventEmitter<
@@ -30,8 +29,7 @@ export class UserTreeItemProvider implements vscode.TreeDataProvider<vscode.Tree
         }
 
         if (element instanceof UserTreeItem) {
-            const regDate = new Date();
-            regDate.setMilliseconds(element.user.registration);
+            const regDate = new Date(element.user.registration);
             const items: vscode.TreeItem[] = [
                 new ChildTreeItem(element, {
                     contextValue: "user.name",
@@ -62,12 +60,11 @@ export class UserTreeItemProvider implements vscode.TreeDataProvider<vscode.Tree
             return Promise.resolve(items);
         }
 
-        const usersSdk = new sdk.Users(client);
-        const usersList = await AppwriteCall<UsersList, UsersList>(usersSdk.list());
+        const usersList = await AppwriteCall<Models.UserList<any>, Models.UserList<any>>(users!.list());
         if (usersList) {
-            const userTreeItems = usersList.users.map((user: User) => new UserTreeItem(user)) ?? [];
+            const userTreeItems = usersList.users.map((user: Models.User<any>) => new UserTreeItem(user)) ?? [];
             const headerItem: vscode.TreeItem = {
-                label: `Total users: ${usersList.sum}`,
+                label: `Total users: ${usersList.total}`,
             };
             return [headerItem, ...userTreeItems];
         }

@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { functionsClient } from '../../client';
+import { functions } from '../../client';
 import { appwriteFunctionRuntimes } from '../../constants';
 import { validateFunctionName } from '../../tree/functions/settings/NameTreeItem';
 
@@ -15,5 +15,5 @@ export async function createFunction(): Promise<void> {
         return;
     }
 
-    await functionsClient?.create(name, [], env);
+    await functions?.create(name, [], env);
 }

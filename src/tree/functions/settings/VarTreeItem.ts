@@ -1,6 +1,6 @@
 import { InputBoxOptions, MarkdownString, window } from "vscode";
 import { Function } from "../../../appwrite";
-import { functionsClient } from "../../../client";
+import { functions } from "../../../client";
 import { ext } from "../../../extensionVariables";
 import { StringEditableTreeItemBase } from "../../common/editable/StringEditableTreeItem";
 import { VarsTreeItem } from "./VarsTreeItem";
@@ -43,7 +43,7 @@ export class VarTreeItem extends StringEditableTreeItemBase {
             delete newVars[this.key];
             newVars[key] = value;
         }
-        await functionsClient?.update(this.func.$id, this.func.name, [], newVars, this.func.events, this.func.schedule, this.func.timeout);
+        await functions?.update(this.func.$id, this.func.name, [], newVars, this.func.events, this.func.schedule, this.func.timeout);
         ext.tree?.functions?.refresh();
     }
 

@@ -1,6 +1,6 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import { Execution, ExecutionList } from "../../../appwrite";
-import { functionsClient } from "../../../client";
+import { functions } from "../../../client";
 import { ExecutionTreeItem } from "./ExecutionTreeItem";
 import { FunctionTreeItem } from "../FunctionTreeItem";
 import { ext } from "../../../extensionVariables";
@@ -14,10 +14,10 @@ export class ExecutionsTreeItem extends AppwriteTreeItemBase<FunctionTreeItem> {
     private executionsToShow = 10;
 
     public async getChildren(): Promise<TreeItem[]> {
-        if (!functionsClient) {
+        if (!functions) {
             return [];
         }
-        const executions: ExecutionList | undefined = await functionsClient.listExecutions(
+        const executions: ExecutionList | undefined = await functions.listExecutions(
             this.parent.func.$id,
             undefined,
             this.executionsToShow,

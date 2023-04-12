@@ -1,9 +1,9 @@
 import { window } from "vscode";
-import { usersClient } from '../../client';
+import { users } from '../../client';
 import { ext } from '../../extensionVariables';
 
 export async function createUser(): Promise<void> {
-    if (!usersClient) {
+    if (!users) {
         return;
     }
     const email = await window.showInputBox({
@@ -36,7 +36,7 @@ export async function createUser(): Promise<void> {
         prompt: "New user name (optional)",
     });
 
-    await usersClient.createNewUser({
+    await users.createNewUser({
         email,
         password,
         name: name === "" ? undefined : name,

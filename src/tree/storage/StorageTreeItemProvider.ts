@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { storageClient } from "../../client";
+import { storage } from "../../client";
 import { FileTreeItem } from "./FileTreeItem";
 
 export class StorageTreeItemProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -18,11 +18,11 @@ export class StorageTreeItemProvider implements vscode.TreeDataProvider<vscode.T
     }
 
     async getChildren(_element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
-        if (storageClient === undefined) {
+        if (storage === undefined) {
             return [];
         }
 
-        const files = await storageClient.listFiles();
+        const files = await storage.listFiles();
         if (files === undefined || files?.files.length === 0) {
             const noStorage = new vscode.TreeItem("No files found");
             return [noStorage];

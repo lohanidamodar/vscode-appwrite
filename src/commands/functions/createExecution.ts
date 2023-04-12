@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 import { Execution } from '../../appwrite';
-import { functionsClient } from '../../client';
+import { functions } from '../../client';
 import { ext } from '../../extensionVariables';
 import { FunctionTreeItem } from '../../tree/functions/FunctionTreeItem';
 import { sleep } from '../../utils/sleep';
@@ -14,7 +14,7 @@ export async function createExecution(functionTreeItem: FunctionTreeItem): Promi
 
 export async function executeFunction(functionId: string): Promise<void> {
     ext.outputChannel.appendLog(`Creating execution for function with ID: ${functionId}`);
-    let execution = await functionsClient?.createExecution(functionId);
+    let execution = await functions?.createExecution(functionId);
     ext.outputChannel.appendLog(JSON.stringify(execution, null, 2));
     await ext.tree?.functions?.refresh();
 
@@ -50,7 +50,7 @@ async function waitForExecution(execution: Execution | undefined): Promise<Execu
         await sleep(5000);
 
         ext.outputChannel.appendLog("Execution still ...");
-        return await waitForExecution(await functionsClient?.getExecution(execution.functionId, execution.$id));
+        return await waitForExecution(await functions?.getExecution(execution.functionId, execution.$id));
     }
 
     return execution;

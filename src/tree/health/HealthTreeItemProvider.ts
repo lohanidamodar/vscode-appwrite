@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
-import { healthClient } from "../../client";
+import { health } from "../../client";
 import { ext } from "../../extensionVariables";
 import { HealthTreeItem } from "./HealthTreeItem";
 import * as dayjs from "dayjs";
 import * as localizedFormat from "dayjs/plugin/localizedFormat";
 import { healthTooltips } from "../../appwrite/Health";
-import { AppwriteHealth } from "../../appwrite";
 import { promiseWithTimeout } from "../../utils/promiseWithTimeout";
+import { Models } from "node-appwrite";
 // dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 
@@ -28,18 +28,18 @@ export class HealthTreeItemProvider implements vscode.TreeDataProvider<vscode.Tr
     }
 
     async getChildren(element?: HealthTreeItem): Promise<vscode.TreeItem[]> {
-        if (healthClient === undefined) {
+        if (health === undefined) {
             return [];
         }
 
         // get children for root
         if (element === undefined) {
             try {
-                const health = await promiseWithTimeout<Partial<AppwriteHealth> | undefined>(
+                const res = await promiseWithTimeout<Partial<Models.HealthStatus> | undefined>(
                     10000,
                     async () => {
                         try {
-                            return await healthClient?.checkup();
+                            return await health?.get();
                         } catch (e) {
                             ext.outputChannel?.append('Error: ' + e.message);
                             vscode.window.showErrorMessage('Could not connect to Appwrite project');
@@ -52,7 +52,7 @@ export class HealthTreeItemProvider implements vscode.TreeDataProvider<vscode.Tr
                 }
                 ext.outputChannel?.append(JSON.stringify(health, null, 4));
                 const healthItems = Object.entries(health).map(([service, status]) => {
-                    return new HealthTreeItem(service, status, healthTooltips[service as keyof AppwriteHealth]);
+                    return new HealthTreeItem(service, status) // , healthTooltips[service as keyof Models.HealthStatus]);
                 });
                 this.lastChecked = new Date();
                 return [

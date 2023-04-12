@@ -1,15 +1,14 @@
 import * as vscode from "vscode";
-import { client } from "../../client";
+import { client, databases } from "../../client";
 import AppwriteCall from "../../utils/AppwriteCall";
-import { Collection, CollectionsList } from "../../appwrite";
-import { CollectionTreeItem } from "./CollectionTreeItem";
-import { AppwriteSDK } from "../../constants";
 import { ext } from '../../extensionVariables';
 import { AppwriteTreeItemBase } from '../../ui/AppwriteTreeItemBase';
+import { Models } from "node-appwrite";
+import { DatabaseTreeItem } from "./DatabaseTreeItem";
 
 export class DatabaseTreeItemProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | void> = new vscode.EventEmitter<
-        CollectionTreeItem | undefined | void
+        DatabaseTreeItem | undefined | void
     >();
 
     readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
@@ -37,17 +36,15 @@ export class DatabaseTreeItemProvider implements vscode.TreeDataProvider<vscode.
             return await parent.getChildren?.() ?? [];
         }
 
-        const databaseSdk = new AppwriteSDK.Database(client);
-
-        const collectionsList = await AppwriteCall<CollectionsList, CollectionsList>(databaseSdk.listCollections());
-        if (collectionsList) {
-            const collectionTreeItems = collectionsList.collections.map((collection: Collection) => new CollectionTreeItem(collection, this)) ?? [];
+        const databaseList = await AppwriteCall<Models.DatabaseList, Models.DatabaseList>(databases!.list());
+        if (databaseList) {
+            const databaseTreeItems = databaseList.databases.map((database: Models.Database) => new DatabaseTreeItem(database, this)) ?? [];
             const headerItem: vscode.TreeItem = {
-                label: `Total collections: ${collectionsList.sum}`,
+                label: `Total Databases: ${databaseList.total}`,
             };
-            return [headerItem, ...collectionTreeItems];
+            return [headerItem, ...databaseTreeItems];
         }
 
-        return [{ label: "No collections found" }];
+        return [{ label: "No Databases found" }];
     }
 }

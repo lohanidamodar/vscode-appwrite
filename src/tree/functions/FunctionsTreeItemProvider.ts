@@ -1,11 +1,10 @@
 import * as vscode from "vscode";
-import { client } from "../../client";
-import { Function, FunctionsList } from "../../appwrite";
-import { AppwriteSDK } from "../../constants";
+import { client, functions } from "../../client";
 import { AppwriteTreeItemBase } from "../../ui/AppwriteTreeItemBase";
 import { ext } from "../../extensionVariables";
 import { EventEmitter, TreeItem } from "vscode";
 import { FunctionTreeItem } from "./FunctionTreeItem";
+import { Models } from "node-appwrite";
 
 export class FunctionsTreeItemProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: EventEmitter<TreeItem | undefined | void> = new EventEmitter<TreeItem | undefined | void>();
@@ -31,12 +30,11 @@ export class FunctionsTreeItemProvider implements vscode.TreeDataProvider<vscode
         }
 
         if (parent === undefined) {
-            const functionsSdk = new AppwriteSDK.Functions(client);
 
-            const list: FunctionsList = await functionsSdk.list();
+            const list: Models.FunctionList = await functions!.list();
 
             if (list) {
-                const functionTreeItems = list.functions.map((func: Function) => new FunctionTreeItem(func, this)) ?? [];
+                const functionTreeItems = list.functions.map((func: Models.Function) => new FunctionTreeItem(func, this)) ?? [];
                 return functionTreeItems;
             }
 

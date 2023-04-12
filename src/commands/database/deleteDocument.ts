@@ -1,10 +1,10 @@
 import { window } from "vscode";
-import { databaseClient } from "../../client";
+import { databases } from "../../client";
 import { DocumentTreeItem } from "../../tree/database/DocumentTreeItem";
 import { confirmDialog } from "../../ui/confirmDialog";
 
 export async function deleteDocument(documentTreeItem: DocumentTreeItem): Promise<void> {
-    if (!databaseClient) {
+    if (!databases) {
         return;
     }
     const document = documentTreeItem.document;
@@ -12,7 +12,7 @@ export async function deleteDocument(documentTreeItem: DocumentTreeItem): Promis
     try {
         const shouldDelete = await confirmDialog(`Delete document "${document["$id"]}" from ${collection.name}?`);
         if (shouldDelete) {
-            await databaseClient.deleteDocument(collection.$id, document["$id"]);
+            await databases.deleteDocument(collection.$id, document["$id"]);
             window.showInformationMessage(`Deleted document "${document["$id"]}" from ${collection.name}.`);
         }
     } catch (e) {

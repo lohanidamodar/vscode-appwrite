@@ -1,33 +1,33 @@
 import { ProgressLocation, QuickPickItem, Uri, window, workspace } from "vscode";
-import { functionsClient } from "../../client";
+import { functions } from "../../client";
 import { getTarReadStream } from "../../utils/tar";
 import { ext } from "../../extensionVariables";
 import * as fs from "fs";
 import { TagsTreeItem } from "../../tree/functions/tags/TagsTreeItem";
 import { selectWorkspaceFolder } from "../../utils/workspace";
 import { ProgressMessage } from "../../utils/types";
-import { Tag } from "../../appwrite";
 import { activateTag } from "./activateTag";
+import { InputFile, Models } from "node-appwrite";
 
 export async function createTag(item?: TagsTreeItem | Uri): Promise<void> {
     if (item instanceof Uri) {
-        const functions = await functionsClient?.list();
-        if (functions === undefined) {
+        const functionList = await functions?.list();
+        if (functionList === undefined) {
             return;
         }
         const pick = await window.showQuickPick(
-            functions.functions.map<QuickPickItem>(
-                (func): QuickPickItem => ({ label: func.name, description: func.env, detail: func.$id })
+            functionList.functions.map<QuickPickItem>(
+                (func): QuickPickItem => ({ label: func.name, description: func.runtime, detail: func.$id })
             ),
             { placeHolder: "Select a function to create tag" }
         );
         if (pick === undefined || pick.detail === undefined) {
             return;
         }
-        const tags = await functionsClient?.listTags(pick.detail);
+        const deployments = await functions?.listDeployments(pick.detail);
         let value;
-        if (tags && tags.tags.length > 0) {
-            value = tags.tags[tags.tags.length - 1].command;
+        if (deployments && deployments.deployments.length > 0) {
+            value = deployments.deployments[deployments.deployments.length - 1].entrypoint;
         }
         const command = await window.showInputBox({ value, prompt: "Command to run your code" });
         if (command === undefined) {
@@ -55,10 +55,10 @@ export async function createTag(item?: TagsTreeItem | Uri): Promise<void> {
         if (folder === undefined || folder === "") {
             return;
         }
-        const tags = await functionsClient?.listTags(func.$id);
+        const deployments = await functions?.listDeployments(func.$id);
         let value;
-        if (tags && tags.tags.length > 0) {
-            value = tags.tags[tags.tags.length - 1].command;
+        if (deployments && deployments.deployments.length > 0) {
+            value = deployments.deployments[deployments.deployments.length - 1].entrypoint;
         }
         const command = await window.showInputBox({ value, prompt: "Command to run your code" });
         if (command === undefined) {
@@ -78,13 +78,13 @@ export async function createTag(item?: TagsTreeItem | Uri): Promise<void> {
     }
 
     if (item === undefined) {
-        const functions = await functionsClient?.list();
-        if (functions === undefined) {
+        const functionList = await functions?.list();
+        if (functionList === undefined) {
             return;
         }
         const pick = await window.showQuickPick(
-            functions.functions.map<QuickPickItem>(
-                (func): QuickPickItem => ({ label: func.name, description: func.env, detail: func.$id })
+            functionList.functions.map<QuickPickItem>(
+                (func): QuickPickItem => ({ label: func.name, description: func.runtime, detail: func.$id })
             ),
             { placeHolder: "Select a function to create tag" }
         );
@@ -93,10 +93,10 @@ export async function createTag(item?: TagsTreeItem | Uri): Promise<void> {
         }
         const funcId = pick.detail;
         const folder = await selectWorkspaceFolder("Select folder of your function code.");
-        const tags = await functionsClient?.listTags(funcId);
+        const tags = await functions?.listDeployments(funcId);
         let value;
-        if (tags && tags.tags.length > 0) {
-            value = tags.tags[tags.tags.length - 1].command;
+        if (tags && tags.deployments.length > 0) {
+            value = tags.deployments[tags.deployments.length - 1].entrypoint;
         }
         const command = await window.showInputBox({ value, prompt: "Command to run your code" });
         if (command === undefined) {
@@ -116,10 +116,10 @@ export async function createTag(item?: TagsTreeItem | Uri): Promise<void> {
     }
 }
 
-async function createTagFromUri(functionId: string, command: string, uri: Uri, progress: ProgressMessage): Promise<Tag | undefined> {
+async function createTagFromUri(functionId: string, command: string, uri: Uri, progress: ProgressMessage): Promise<Models.Deployment | undefined> {
     progress.report({ message: "Creating tarball", increment: 10 });
 
-    if (functionsClient === undefined) {
+    if (functions === undefined) {
         return;
     }
 
@@ -139,13 +139,13 @@ async function createTagFromUri(functionId: string, command: string, uri: Uri, p
     await workspace.fs.readFile(Uri.file(tarFilePath));
     progress.report({ message: "Uploading tag", increment: 60 });
     try {
-        return await functionsClient.createTag(functionId, command, fs.createReadStream(tarFilePath));
+        return await functions.createDeployment(functionId, command, InputFile.fromPath(tarFilePath, 'code'), true);
     } catch (e) {
         ext.outputChannel.appendLog("Creating tag error: " + e);
     }
 }
 
-async function tagNotification(tag: Tag): Promise<void> {
+async function tagNotification(tag: Models.Deployment): Promise<void> {
     ext.tree?.functions?.refresh();
     if (tag) {
         const action = await window.showInformationMessage(

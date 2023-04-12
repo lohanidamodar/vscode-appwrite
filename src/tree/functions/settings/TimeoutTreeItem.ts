@@ -1,6 +1,6 @@
 import { InputBoxOptions, MarkdownString } from "vscode";
 import { Function } from "../../../appwrite";
-import { functionsClient } from "../../../client";
+import { functions } from "../../../client";
 import { ext } from "../../../extensionVariables";
 import { StringEditableTreeItemBase } from "../../common/editable/StringEditableTreeItem";
 
@@ -28,7 +28,7 @@ export class TimeoutTreeItem extends StringEditableTreeItemBase {
     };
 
     public async setValue(value: string): Promise<void> {
-        await functionsClient?.update(
+        await functions?.update(
             this.func.$id,
             this.func.name,
             [],

@@ -1,6 +1,6 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import { Function } from "../../../appwrite";
-import { functionsClient } from "../../../client";
+import { functions } from "../../../client";
 import { AppwriteTreeItemBase } from '../../../ui/AppwriteTreeItemBase';
 import { ChildTreeItem } from "../../ChildTreeItem";
 import { FunctionTreeItem } from "../FunctionTreeItem";
@@ -19,7 +19,7 @@ export class FunctionSettingsTreeItem extends AppwriteTreeItemBase<FunctionTreeI
     }
 
     public async getChildren(): Promise<TreeItem[]> {
-        if (!functionsClient) {
+        if (!functions) {
             return [];
         }
 

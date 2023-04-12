@@ -1,6 +1,6 @@
 import { InputBoxOptions, MarkdownString } from "vscode";
 import { Function } from "../../../appwrite";
-import { functionsClient } from "../../../client";
+import { functions } from "../../../client";
 import { ext } from "../../../extensionVariables";
 import cron from "cron-validate";
 import { FunctionSettingsTreeItem } from "./FunctionSettingsTreeItem";
@@ -25,7 +25,7 @@ export class ScheduleTreeItem extends StringEditableTreeItemBase {
     };
 
     public async setValue(value: string): Promise<void> {
-        await functionsClient?.update(this.func.$id, this.func.name, [], this.func.vars, this.func.events, value === "" ? undefined : value, this.func.timeout);
+        await functions?.update(this.func.$id, this.func.name, [], this.func.vars, this.func.events, value === "" ? undefined : value, this.func.timeout);
         ext.tree?.functions?.refresh();
     }
 
