@@ -3,7 +3,6 @@ import { databases } from "../../client";
 import { AppwriteTreeItemBase } from "../../ui/AppwriteTreeItemBase";
 import { DatabaseTreeItemProvider } from "./DatabaseTreeItemProvider";
 import { Models } from "node-appwrite";
-import { CollectionTreeItem } from "./CollectionTreeItem";
 import { CollectionsTreeItem } from "./CollectionsTreeItem";
 
 export class DatabaseTreeItem extends AppwriteTreeItemBase {
