@@ -1,8 +1,8 @@
+import { Models } from "node-appwrite";
 import { ThemeIcon, TreeItem } from "vscode";
-import { File } from "../../appwrite";
 
 export class FileTreeItem extends TreeItem {
-    constructor(public readonly file: File) {
+    constructor(public readonly file: Models.File) {
         super(file.name);
     }
 

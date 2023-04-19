@@ -1,10 +1,6 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import { AppwriteTreeItemBase } from "../../ui/AppwriteTreeItemBase";
-import { DatabaseTreeItemProvider } from "./DatabaseTreeItemProvider";
 import { DocumentsTreeItem } from "./DocumentsTreeItem";
-import { PermissionsTreeItem } from "./settings/PermissionsTreeItem";
-import { RulesTreeItem } from "./settings/RulesTreeItem";
-import { DatabaseTreeItem } from "./DatabaseTreeItem";
 import { CollectionsTreeItem } from "./CollectionsTreeItem";
 import { Models } from "node-appwrite";
 

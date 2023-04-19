@@ -1,10 +1,12 @@
 import * as vscode from "vscode";
-import { storage } from "../../client";
-import { FileTreeItem } from "./FileTreeItem";
+import { storage, client } from "../../client";
+import { BucketTreeItem } from "./BucketTreeItem";
+import { ext } from "../../extensionVariables";
+import { AppwriteTreeItemBase } from "../../ui/AppwriteTreeItemBase";
 
 export class StorageTreeItemProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | void> = new vscode.EventEmitter<
-        vscode.TreeItem | undefined | void
+        BucketTreeItem | undefined | void
     >();
 
     readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | void> = this._onDidChangeTreeData.event;
@@ -13,20 +15,36 @@ export class StorageTreeItemProvider implements vscode.TreeDataProvider<vscode.T
         this._onDidChangeTreeData.fire();
     }
 
+    refreshChild(child: vscode.TreeItem): void {
+        this._onDidChangeTreeData.fire(child);
+    }
+
     getTreeItem(element: vscode.TreeItem): vscode.TreeItem {
         return element;
     }
 
-    async getChildren(_element?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
+    async getChildren(parent?: vscode.TreeItem): Promise<vscode.TreeItem[]> {
+        ext.outputChannel?.appendLine('getChildren for: ' + parent?.label);
+        if (client === undefined) {
+            return Promise.resolve([]);
+        }
+
+        if (parent instanceof AppwriteTreeItemBase) {
+            return await parent.getChildren?.() ?? [];
+        }
         if (storage === undefined) {
             return [];
         }
 
-        const files = await storage.listFiles();
-        if (files === undefined || files?.files.length === 0) {
-            const noStorage = new vscode.TreeItem("No files found");
+        const buckets = await storage.listBuckets();
+        if (buckets === undefined || buckets?.buckets.length === 0) {
+            const noStorage = new vscode.TreeItem("No Buckets found");
             return [noStorage];
         }
-        return files.files.map((file) => new FileTreeItem(file));
+        const bucketTreeItems =  buckets.buckets.map((bucket) => new BucketTreeItem(bucket, this));
+        const headerItem: vscode.TreeItem = {
+            label: `Total Buckets: ${buckets.total}`,
+        };
+        return [headerItem, ...bucketTreeItems];
     }
 }

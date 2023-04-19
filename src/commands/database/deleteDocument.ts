@@ -9,10 +9,11 @@ export async function deleteDocument(documentTreeItem: DocumentTreeItem): Promis
     }
     const document = documentTreeItem.document;
     const collection = documentTreeItem.parent.parent.collection;
+    const database = documentTreeItem.parent.parent.parent.database;
     try {
         const shouldDelete = await confirmDialog(`Delete document "${document["$id"]}" from ${collection.name}?`);
         if (shouldDelete) {
-            await databases.deleteDocument(collection.$id, document["$id"]);
+            await databases.deleteDocument(database.$id, collection.$id, document["$id"]);
             window.showInformationMessage(`Deleted document "${document["$id"]}" from ${collection.name}.`);
         }
     } catch (e) {

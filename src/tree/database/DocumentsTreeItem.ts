@@ -14,18 +14,21 @@ export class DocumentsTreeItem extends AppwriteTreeItemBase<CollectionTreeItem> 
     }
 
     public async getChildren(): Promise<TreeItem[]> {
-        const documentList = await AppwriteCall<Models.DocumentList<any>>(databases!.listDocuments(this.parent.parent.database.$id, this.parent.collection.$id));
-        if (documentList?.total == 0) {
+        if(databases === undefined) {
+            return [];
+        }
+        const documentList = await AppwriteCall<Models.DocumentList<any>>(databases.listDocuments(this.parent.parent.database.$id, this.parent.collection.$id));
+        if (documentList === undefined || documentList?.total === 0) {
             return [];
         }
 
         ext.outputChannel?.append(JSON.stringify(documentList, null, 4));
 
-        const documentTreeItems = documentList!.documents.map((document) => new DocumentTreeItem(this, document));
+        const documentTreeItems = documentList.documents.map((document) => new DocumentTreeItem(this, document));
         const headerItem: TreeItem = {
             label: `Total documents: ${documentTreeItems?.length}`,
         };
-        return [headerItem, ...documentTreeItems!];
+        return [headerItem, ...documentTreeItems];
     }
 
     collapsibleState = TreeItemCollapsibleState.Collapsed;

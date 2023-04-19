@@ -12,7 +12,7 @@ function parseJSONString(str: string): { valid: boolean; value: any } {
 
 export async function viewDocumentAsJson(documentTreeItem: DocumentTreeItem): Promise<void> {
     const document = documentTreeItem.document;
-    const documentId = document["$id"];
+    const documentId = document.$id;
 
     const formatJsonStrings = workspace.getConfiguration("appwrite").get<Boolean>("formatJsonStrings");
 

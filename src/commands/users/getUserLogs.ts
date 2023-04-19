@@ -8,7 +8,7 @@ export async function getUserLogs(treeItem: UserTreeItem): Promise<void> {
     }
     const userId = treeItem.user.$id;
 
-    const logs = await users.getLogs(userId);
+    const logs = await users.listLogs(userId);
 
     await openReadOnlyJson({ label: `Logs for ${treeItem.user.email}`, fullId: `${treeItem.user.$id}-UserLogs` }, logs);
 }

@@ -9,7 +9,7 @@ export function getConsoleUrlFromEndpoint(endpoint: string): string {
 }
 
 function getUserUrl(userId: string, endpoint: string, projectId: string): string {
-    return `${getConsoleUrlFromEndpoint(endpoint)}/users/user?id=${userId}&project=${projectId}`;
+    return `${getConsoleUrlFromEndpoint(endpoint)}/project-${projectId}/auth/user-${userId}`;
 }
 
 export async function openUserInConsole(item: UserTreeItem): Promise<void> {

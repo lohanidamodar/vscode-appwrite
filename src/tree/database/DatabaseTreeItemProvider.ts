@@ -35,8 +35,11 @@ export class DatabaseTreeItemProvider implements vscode.TreeDataProvider<vscode.
         if (parent instanceof AppwriteTreeItemBase) {
             return await parent.getChildren?.() ?? [];
         }
+        if(databases === undefined) {
+            return [];
+        }
 
-        const databaseList = await AppwriteCall<Models.DatabaseList, Models.DatabaseList>(databases!.list());
+        const databaseList = await AppwriteCall<Models.DatabaseList, Models.DatabaseList>(databases.list());
         if (databaseList) {
             const databaseTreeItems = databaseList.databases.map((database: Models.Database) => new DatabaseTreeItem(database, this)) ?? [];
             const headerItem: vscode.TreeItem = {

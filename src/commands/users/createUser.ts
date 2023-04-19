@@ -1,6 +1,7 @@
 import { window } from "vscode";
 import { users } from '../../client';
 import { ext } from '../../extensionVariables';
+import { ID } from "node-appwrite";
 
 export async function createUser(): Promise<void> {
     if (!users) {
@@ -36,11 +37,13 @@ export async function createUser(): Promise<void> {
         prompt: "New user name (optional)",
     });
 
-    await users.createNewUser({
+    await users.create(
+        ID.unique(),
         email,
+        '',
         password,
-        name: name === "" ? undefined : name,
-    });
+         name === "" ? undefined : name,
+    );
 
     ext.tree?.users?.refresh();
 }
